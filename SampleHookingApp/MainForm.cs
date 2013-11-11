@@ -50,6 +50,7 @@ namespace Kennedy.ManagedHooks.SampleHookingApp
         private Button button1;
         private TextBox textBox1;
 		private Kennedy.ManagedHooks.KeyboardHook keyboardHook = null;
+        private Kennedy.ManagedHooks.CBTHook cbtHook = null;
         public delegate bool CallBack(IntPtr hwnd, int lParam);
 
         [DllImport("user32.dll")]
@@ -85,7 +86,8 @@ namespace Kennedy.ManagedHooks.SampleHookingApp
 			keyboardHook = new Kennedy.ManagedHooks.KeyboardHook();
 			keyboardHook.KeyboardEvent += new Kennedy.ManagedHooks.KeyboardHook.KeyboardEventHandler(keyboardHook_KeyboardEvent);
 
-           
+            cbtHook = new Kennedy.ManagedHooks.CBTHook();
+            cbtHook.CBTEvent += new Kennedy.ManagedHooks.CBTHook.CBTEventHandler(cbtHook_windowsEvent);
         }
 
         public static bool WindowProcess(IntPtr hwnd, int lParam)
@@ -460,16 +462,16 @@ namespace Kennedy.ManagedHooks.SampleHookingApp
             //elements = aeDeskTop.FindAll(TreeScope.Subtree, new AndCondition(condition1, condition2, condition));
 
 			AddText("Adding mouse hook.");
-			mouseHook.InstallHook();
+			mouseHook.InstallHook(this.Handle);
 
 			AddText("Adding keyboard hook.");
-			keyboardHook.InstallHook();
+			keyboardHook.InstallHook(this.Handle);
+
+            AddText("Adding cbt hook");
+            cbtHook.InstallHook(this.Handle);
 
 			buttonInstall.Enabled = false;
 			buttonUninstall.Enabled = true;
-
-            
-
             
 		}
 
@@ -482,6 +484,9 @@ namespace Kennedy.ManagedHooks.SampleHookingApp
 
 			keyboardHook.UninstallHook();
 			AddText("Keyboard hook removed.");
+
+            cbtHook.UninstallHook();
+            AddText("CBT hook removed.");
 
 			buttonInstall.Enabled = true;
 			buttonUninstall.Enabled = false;
@@ -540,6 +545,12 @@ namespace Kennedy.ManagedHooks.SampleHookingApp
 			string msg = string.Format("Keyboard event: {0}: {1}.", kEvent.ToString(), key);
 			AddText(msg);
 		}
+
+        private void cbtHook_windowsEvent(Kennedy.ManagedHooks.CBTEvents cEvent,IntPtr hwnd)
+        {
+            string msg = string.Format("{0}-->{1}", cEvent.ToString(), hwnd);
+            AddText(cEvent.ToString());
+        }
 
 		#region Utility Methods
 

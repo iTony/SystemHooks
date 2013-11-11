@@ -31,10 +31,10 @@ namespace HookCoreErrors
 typedef void (CALLBACK *HookProc)(int code, WPARAM w, LPARAM l);
 
 int SetUserHookCallback(HookProc userProc, UINT hookID);
-bool InitializeHook(UINT hookID, HINSTANCE appInstance, int threadID);
+bool InitializeHook(UINT hookID, int threadID,HWND destination);
 void UninitializeHook(UINT hookID);
 void Dispose(UINT hookID);
 int FilterMessage(UINT hookID, int message);
 bool GetMousePosition(WPARAM wparam, LPARAM lparam, int & x, int & y,HWND & hwnd);
 bool GetKeyboardReading(WPARAM wparam, LPARAM lparam, int & vkCode);
-
+bool GetCBTMessage(WPARAM wparam, LPARAM lparam, HWND & hwnd);

@@ -29,7 +29,10 @@ namespace Kennedy.ManagedHooks
 		/// <include file='ManagedHooks.xml' path='Docs/General/Empty/*'/>
 		KeyboardLL	= 13,
 		/// <include file='ManagedHooks.xml' path='Docs/General/Empty/*'/>
-		MouseLL		= 14
+		MouseLL		= 14,
+
+        CBT         = 5
+
 	};
 }
 

@@ -10,6 +10,7 @@
 // /////////////////////////////////////////////////////////////
 
 using System;
+using System.Windows.Forms;
 
 namespace Kennedy.ManagedHooks
 {
@@ -60,9 +61,10 @@ namespace Kennedy.ManagedHooks
 			}
 
 			GetKeyboardReading(wparam, lparam, ref vkCode);
-			VirtualKeys vk = (VirtualKeys)vkCode;
+			//VirtualKeys vk = (VirtualKeys)vkCode;
 				
-			System.Windows.Forms.Keys key  = ConvertKeyCode(vk);
+			//System.Windows.Forms.Keys key  = ConvertKeyCode(vk);
+            Keys key = (Keys)vkCode;
 
 			if (key == System.Windows.Forms.Keys.Attn)
 			{

@@ -17,10 +17,13 @@
 HookProc UserMouseHookCallback = NULL;
 HookProc UserKeyboardHookCallback = NULL;
 HookProc UserCBTHookCallback = NULL;
-HHOOK hookMouse = NULL;
-HHOOK hookKeyboard = NULL;
-HHOOK hookCBT = NULL;
+#pragma data_seg("TestData")
+	HHOOK hookMouse = NULL;
+	HHOOK hookKeyboard = NULL;
+	HHOOK hookCBT = NULL;
+#pragma data_seg()
 
+#pragma comment(linker,"/section:.TestData,rws")
 //
 // Store the application instance of this module to pass to
 // hook initialization. This is set in DLLMain().
@@ -77,7 +80,7 @@ int SetUserHookCallback(HookProc userProc, UINT hookID)
 	return HookCoreErrors::SetCallBack::NOT_IMPLEMENTED;
 }
 
-bool InitializeHook(UINT hookID, int threadID)
+bool InitializeHook(UINT hookID, int threadID,HWND destination)
 {
 	if (g_appInstance == NULL)
 	{
@@ -111,6 +114,12 @@ bool InitializeHook(UINT hookID, int threadID)
 			return false;
 		}
 
+		/*if (GetProp(GetDesktopWindow(), "WILSON_HOOK_HWND_CBT") != NULL)
+		{
+		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), "WILSON_HOOK_HWND_CBT"), RegisterWindowMessage("WILSON_HOOK_CBT_REPLACED"), 0, 0);
+		}
+		SetProp(GetDesktopWindow(), "WILSON_HOOK_HWND_KEYBOARD", destination);*/
+		
 		hookCBT = SetWindowsHookEx(hookID,(HOOKPROC)InternalCBTHookCallback,g_appInstance,threadID);
 		return hookCBT != NULL;
 	}
@@ -137,7 +146,7 @@ void UninitializeHook(UINT hookID)
 	}
 	else if (hookID == WH_CBT)
 	{
-		if (hookMouse != NULL)
+		if (hookCBT != NULL)
 		{
 			UnhookWindowsHookEx(hookCBT);
 		}

@@ -28,6 +28,7 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD ul_reason_for_call, LPVOID lpRes
 		break;
 
 	case DLL_PROCESS_DETACH:
+		HCBT_ACTIVATE;
 		break;
 
 	default:

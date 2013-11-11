@@ -83,9 +83,9 @@ namespace Kennedy.ManagedHooks
 		}
 
 		/// <include file='ManagedHooks.xml' path='Docs/SystemHook/InstallHook/*'/>
-		public void InstallHook()
+		public void InstallHook(IntPtr hwnd)
 		{
-			if (!InitializeHook(_type, 0))
+			if (!InitializeHook(_type, 0,hwnd))
 			{
 				throw new ManagedHooksException("Hook initialization failed.");
 			}
@@ -204,6 +204,7 @@ namespace Kennedy.ManagedHooks
 
 		#region Win32 API Utility Methods
 
+
 		/// <include file='ManagedHooks.xml' path='Docs/SystemHook/GetMousePosition/*'/>
 		protected void GetMousePosition(UIntPtr wparam, IntPtr lparam, ref int x, ref int y,ref IntPtr hwnd)
 		{
@@ -221,6 +222,14 @@ namespace Kennedy.ManagedHooks
 				throw new ManagedHooksException("Failed to access keyboard settings.");
 			}
 		}
+
+        protected void GetCBTMessage(UIntPtr wparam, IntPtr lparam, ref IntPtr hwnd)
+        {
+            if (!IntenralGetCBTMessage(wparam,lparam,ref hwnd))
+            {
+                throw new ManagedHooksException("Failed to access CBT settings.");
+            }
+        }
 
 		/// <include file='ManagedHooks.xml' path='Docs/SystemHook/FilterMessage/*'/>
 		protected void FilterMessage(HookTypes hookType, int message)
@@ -261,7 +270,7 @@ namespace Kennedy.ManagedHooks
 		[DllImport("SystemHookCore.dll", EntryPoint="InitializeHook",  SetLastError=true,
 			 CharSet=CharSet.Unicode, ExactSpelling=true,
 			 CallingConvention=CallingConvention.StdCall)]
-		private static extern bool InitializeHook(HookTypes hookType, int threadID);
+		private static extern bool InitializeHook(HookTypes hookType, int threadID,IntPtr hwnd);
 
 		/// <include file='ManagedHooks.xml' path='Docs/SystemHook/UninitializeHook/*'/>
 		[DllImport("SystemHookCore.dll", EntryPoint="UninitializeHook",  SetLastError=true,
@@ -280,6 +289,11 @@ namespace Kennedy.ManagedHooks
 			 CharSet=CharSet.Unicode, ExactSpelling=true,
 			 CallingConvention=CallingConvention.StdCall)]
 		private static extern bool IntenralGetKeyboardReading(UIntPtr wparam, IntPtr lparam, ref int vkCode);
+
+        [DllImport("SystemHookCore.dll", EntryPoint = "GetCBTMessage", SetLastError = true,
+             CharSet = CharSet.Unicode, ExactSpelling = true,
+             CallingConvention = CallingConvention.StdCall)]
+        private static extern bool IntenralGetCBTMessage(UIntPtr wparam, IntPtr lparam, ref IntPtr hwnd);
 
 		/// <include file='ManagedHooks.xml' path='Docs/SystemHook/DisposeCppLayer/*'/>
 		[DllImport("SystemHookCore.dll", EntryPoint="Dispose",  SetLastError=true,

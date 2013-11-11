@@ -43,3 +43,8 @@ bool GetKeyboardReading(WPARAM wparam, LPARAM lparam, int & vkCode)
 	return true;
 }
 
+bool GetCBTMessage(WPARAM wparam, LPARAM lparam, HWND & hwnd)
+{
+	return true;
+}
+
